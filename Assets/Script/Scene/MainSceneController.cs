@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,8 @@ public class MainSceneController : MonoBehaviour {
 	public float appearTime = 40f;
 	public float arriveTime = 5f;
 	public int MaxCharacter = 10;
+
+	public Slider expSlider;
 
 	private List<Character> characters = new List<Character>();
 	private float playingTimer = 0f;
@@ -26,10 +29,29 @@ public class MainSceneController : MonoBehaviour {
 		foreach(var obj in base_chara_obj){
 			characters.Add( obj.transform.GetComponent<Character>() );
 		}
+		
+		var userData = UserData.instance;
+		var gameData = GameData.instance;
+		
+		if(userData.level>0){
+			expSlider.minValue = gameData.stages[userData.level-1].exp;
+			expSlider.maxValue = gameData.stages[userData.level].exp;
+			expSlider.value = userData.exp;
+		}
+		else{
+			expSlider.minValue = 0;
+			expSlider.maxValue = gameData.stages[0].exp;
+			expSlider.value = userData.exp;
+		}
 	}
 	
 	// Update is called once per frame
 	void Update () {
+		var userData = UserData.instance;
+		if(expSlider.value != userData.exp){
+			AddExpSlider();
+		}
+
 		if(!appearing){
 			playingTimer += Time.deltaTime;
 			if(playingTimer > appearTime){
@@ -78,5 +100,15 @@ public class MainSceneController : MonoBehaviour {
 		var chara = appers.First();
 
 		return chara.id;
+	}
+	
+	void AddExpSlider(){
+		expSlider.value++;
+		if(expSlider.value >= expSlider.maxValue){
+			var userData = UserData.instance;
+			var gameData = GameData.instance;
+			expSlider.minValue = gameData.stages[userData.level-1].exp;
+			expSlider.maxValue = gameData.stages[userData.level].exp;
+		}
 	}
 }
