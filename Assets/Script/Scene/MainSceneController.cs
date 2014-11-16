@@ -14,7 +14,7 @@ public class MainSceneController : MonoBehaviour {
 	public Slider expSlider;
 
 	private List<Character> characters = new List<Character>();
-	private float playingTimer = 0f;
+	private float playingTimer = 40f;
 	private float appearingTimer = 0f;
 	private int appearCount = 0;
 	private List<GameObject> appearSpot = new List<GameObject>();
@@ -77,6 +77,18 @@ public class MainSceneController : MonoBehaviour {
 		}
 	}
 
+	void OnApplicationPause(){
+		UserData.instance.Save();
+	}
+
+	void OnApplicationQuit(){
+		UserData.instance.Save();
+	}
+
+	void OnDestroy(){
+		UserData.instance.Save();
+	}
+
 	void AppearCharacter(int id){
 		if(base_chara_obj.Length <= id) return;
 		appearSpot = appearSpot.OrderBy(i => Guid.NewGuid()).ToList();
@@ -85,6 +97,7 @@ public class MainSceneController : MonoBehaviour {
 
 			var obj = Instantiate(base_chara_obj[id]) as GameObject;
 			obj.transform.SetParent( spot.transform );
+			obj.transform.localScale = new Vector3(20, 20);
 			obj.transform.localPosition = Vector3.zero;
 
 			break;
@@ -110,5 +123,14 @@ public class MainSceneController : MonoBehaviour {
 			expSlider.minValue = gameData.stages[userData.level-1].exp;
 			expSlider.maxValue = gameData.stages[userData.level].exp;
 		}
+	}
+
+	public void ResetData(){
+		UserData.instance.DeleteData();
+		expSlider.minValue = 0;
+		expSlider.maxValue = GameData.instance.stages[0].exp;
+		expSlider.value = 0;
+
+		UserData.instance.Load();
 	}
 }

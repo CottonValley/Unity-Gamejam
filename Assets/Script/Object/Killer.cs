@@ -46,6 +46,8 @@ public class Killer : MonoBehaviour {
 				UserData userData = UserData.instance;
 				userData.Kill(target.transform.GetComponent<Character>());
 
+				audio.Play();
+
 				Destroy(target);
 				target = null;
 			}
