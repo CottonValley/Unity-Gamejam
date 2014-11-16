@@ -12,8 +12,8 @@ public class GameData {
 
 	public Stage[] stages;
 
-	private GameData __instance = null;
-	public GameData instance{
+	private static GameData __instance = null;
+	public static GameData instance{
 		get{
 			if(__instance == null){
 				__instance = new GameData();
@@ -30,9 +30,10 @@ public class GameData {
 		for(int i=0; i<MaxLevel; i++){
 			Stage temp = new Stage();
 			temp.id = i;
-			temp.exp = Mathf.FloorToInt(BaseExp*(Mathf.Pow(1.9f,i)-1.9f+1)/0.5f);
+			temp.exp = Mathf.FloorToInt(BaseExp*(Mathf.Pow(1.9f, (i+1))-1.9f+1)/0.5f);
 
 			stages[i] = temp;
+			Debug.Log ("Stage== id : "+i+"  exp : "+temp.exp);
 		}
 	}
 }
